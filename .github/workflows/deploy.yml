@@ -1,38 +1,32 @@
-# This is a basic workflow to help you get started with Actions
 name: CI
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+
 on:
   push:
     branches: [ Production ]
   pull_request:
     branches: [ Production ]
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3 # 更新到最新版本
+
+      - uses: actions/setup-node@v3 # 更新到最新版本
         with:
-          node-version: '10.x'
+          node-version: '20' # 更新到 Node.js 20
+          cache: 'npm'
       
       - run: npm install
       - run: npm run build
 
-  # Add a new job for deployment
   deploy:
-    needs: build # This job runs after the build job is successfully completed
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@releases/v4 # 确保使用最新版本
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the built-in GITHUB_TOKEN for authentication
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: dist # The folder the action should deploy.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: dist
