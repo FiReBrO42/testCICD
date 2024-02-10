@@ -1,51 +1,56 @@
-# Simple workflow for deploying static content to GitHub Pages
+
 name: Deploy static content to Pages
 
 on:
-  # 仅在推送到默认分支时运行。
   push:
-    branches: ['Production']
+    branches: [ 'Production' ]  # 修改为 Production 分支
 
-  # 这个选项可以使你手动在 Action tab 页面触发工作流
-  workflow_dispatch:      
+  # 保留手动触发选项
+  workflow_dispatch:
 
-# 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages。
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 允许一个并发的部署
 concurrency:
   group: 'pages'
   cancel-in-progress: true
 
 jobs:
-  # 单次部署的工作描述
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20  # 确保这是您的项目所需的 Node.js 版本
           cache: 'npm'
+      
       - name: Install dependencies
         run: npm install
+      
       - name: Build
-        run: npm run build
+        run: npm run build  # 确保这条命令能生成 dist 目录
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
+      
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
-          # Upload dist repository
-          path: './dist'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+          path: './dist'  # 指定构建产物的路径
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.5.0 # 确保使用最新版本
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          branch: gh-pages
+          folder: dist
+          clean: true
