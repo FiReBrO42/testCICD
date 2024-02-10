@@ -1,0 +1,9 @@
+//載入方法
+@import 'bootstrap/scss/functions';
+//載入bootstrap
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/mixins';
+
+//自定義變數
+@import './_variables.scss';
+@import './customVariables.scss';
