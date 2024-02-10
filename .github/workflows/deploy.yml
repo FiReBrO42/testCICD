@@ -46,16 +46,9 @@ jobs:
         with:
           # Upload dist repository
           path: './dist'
-  # 垂直工作線 deploy
-  deploy:
-    needs: build # 在build後接續
-    runs-on: ubuntu-latest # 運行環境
-    steps: # 工作流程
-      # 部署 https://github.com/JamesIves/github-pages-deploy-action 
       - name: Deploy 🚀
-        uses: s0/git-publish-subdir-action@develop # https://github.com/s0/git-publish-subdir-action
-        env:
-          REPO: self
-          BRANCH: gh-pages
-          FOLDER: dist
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: dist # The folder the action should deploy.
