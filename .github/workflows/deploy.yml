@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   # 单次部署的工作描述
-  deploy:
+  build:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -46,9 +46,14 @@ jobs:
         with:
           # Upload dist repository
           path: './dist'
+  # 垂直工作線 deploy
+  deploy:
+    needs: build # 在build後接續
+    runs-on: ubuntu-latest # 運行環境
+    steps: # 工作流程
       # 部署 https://github.com/JamesIves/github-pages-deploy-action 
       - name: Deploy 🚀
-        uses: s0/git-publish-subdir-action@develop
+        uses: s0/git-publish-subdir-action@develop # https://github.com/s0/git-publish-subdir-action
         env:
           REPO: self
           BRANCH: gh-pages
